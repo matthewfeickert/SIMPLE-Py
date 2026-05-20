@@ -1,6 +1,6 @@
 ---
 marp: true
-theme: gaia
+theme: simplepy
 _class: lead
 paginate: false
 backgroundColor: #fff

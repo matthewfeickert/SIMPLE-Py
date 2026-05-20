@@ -1,2 +1,4 @@
 _build
 *.swp
+_output
+.DS_Store

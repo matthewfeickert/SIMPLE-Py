@@ -1,5 +1,7 @@
 # Setting up for development
 
+[Slides](/slides/1_01_setup)
+
 ## Before you begin
 
 You'll want to have the following tools installed:

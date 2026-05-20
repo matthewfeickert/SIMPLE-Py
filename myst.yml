@@ -12,35 +12,35 @@ project:
     - file: README.md
     - title: Basic Packaging
       children:
-        - file: basic-packaging/01_setup.md
-        - file: basic-packaging/02_tooling.md
-        - file: basic-packaging/03_package.md
-        - file: basic-packaging/03_publishing_ci.md
-        - file: basic-packaging/04_sp_guide.md
+        - file: content/basic-packaging/01_setup.md
+        - file: content/basic-packaging/02_tooling.md
+        - file: content/basic-packaging/03_package.md
+        - file: content/basic-packaging/03_publishing_ci.md
+        - file: content/basic-packaging/04_sp_guide.md
     - title: Compiled
       children:
-        - file: compiled/01_package.md
-        - file: compiled/02_binding.md
-        - file: compiled/03_publishing_ci.md
+        - file: content/compiled/01_package.md
+        - file: content/compiled/02_binding.md
+        - file: content/compiled/03_publishing_ci.md
     - title: Scikit Build
       children:
-        - file: scikit-build/01_custom.md
-        - file: scikit-build/02_stable_abi.md
-        - file: scikit-build/03_dynamic_metadata.md
-        - file: scikit-build/04_editable_installs.md
-        - file: scikit-build/05_overrides.md
+        - file: content/scikit-build/01_custom.md
+        - file: content/scikit-build/02_stable_abi.md
+        - file: content/scikit-build/03_dynamic_metadata.md
+        - file: content/scikit-build/04_editable_installs.md
+        - file: content/scikit-build/05_overrides.md
     - title: Other Tools
       children:
-        - file: other-tools/01_plugin.md
-        - file: other-tools/02_pixi_build.md
-        - file: other-tools/03_conda_forge.md
-        - file: other-tools/04_distros.md
+        - file: content/other-tools/01_plugin.md
+        - file: content/other-tools/02_pixi_build.md
+        - file: content/other-tools/03_conda_forge.md
+        - file: content/other-tools/04_distros.md
     - title: Interesting
       children:
-        - file: interesting/free_threading.md
-        - file: interesting/lazy_imports.md
-        - file: interesting/pep723.md
-        - file: interesting/solvers.md
+        - file: content/interesting/free_threading.md
+        - file: content/interesting/lazy_imports.md
+        - file: content/interesting/pep723.md
+        - file: content/interesting/solvers.md
 
 site:
   template: book-theme
