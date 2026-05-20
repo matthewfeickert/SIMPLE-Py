@@ -5,7 +5,7 @@
   "scripts": {
     "build-book": "myst build --html",
     "build-slides": "mkdir -p _build/html/slides && marp slides/1_01_setup.md --html -o _build/html/slides/1_01_setup.html",
-    "build": "bun run build-book && bun run build-slides",
+    "build": "bun run build-slides && bun run build-book",
     "clean": "rm -rf _build"
   },
   "dependencies": {

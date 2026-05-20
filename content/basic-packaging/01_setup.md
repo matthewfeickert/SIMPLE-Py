@@ -1,6 +1,6 @@
 # Setting up for development
 
-[Slides](/slides/1_01_setup)
+[Slides](https://scikit-build.org/SIMPLE-Py/slides/1_01_setup)
 
 ## Before you begin
 
