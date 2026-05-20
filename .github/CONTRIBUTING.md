@@ -1,19 +1,18 @@
 # Contributing to SIMPLE-Py
 
-Contributions are welcome! This project is a workshop book built with Jupyter Book and accompanied by Marp slides.
+Contributions are welcome! This project is a workshop book built with [MyST](https://mystmd.org/) and accompanied by Marp slides.
 
 ## Setup
 
 ### Prerequisites
 
-- [uv](https://docs.astral.sh/uv/) (for building the book)
-- [Node.js](https://nodejs.org/) (for building the slides)
+- [Node.js](https://nodejs.org/) (for building the book and slides)
 - [prek](https://github.com/j178/prek) (for linting)
 
 ## Building the book
 
 ```bash
-uvx jupyter-book build --html
+npx mystmd build --html
 ```
 
 The output is placed in `_build/html/`.
