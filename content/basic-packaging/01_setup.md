@@ -1,6 +1,13 @@
+---
+downloads:
+  - url: /slides/1_01_setup.html
+    static: false
+    title: Slides
+---
+
 # Setting up for development
 
-[Slides](https://scikit-build.org/SIMPLE-Py/slides/1_01_setup)
+[Slides](/slides/1_01_setup.html)
 
 ## Before you begin
 
@@ -22,3 +29,45 @@ These tools will be handy too, but they can be all installed via `uv tool instal
 ### Virtual environments
 
 The first thing you should know when packaging is how to install stuff.
+There are three options:
+
+|                          | Location          | Pros                | Cons                   |
+|--------------------------|-------------------|---------------------|------------------------|
+| **System site-packages** | `/...`            | Works from anywhere | Can break your machine |
+| **User site-packages**   | `~/.local/...`    | Works for user      | Only one, can break    |
+| **Virtual environment**  | `.venv/` (common) | Many!               | More effort            |
+
+A system or user install sounds nice, but you can't install incompatible
+packages, they can break your system, you can't control what each project
+needs, you can end up not knowing what your requirements are, it's hard to
+update, etc.
+
+The standard solution is a virual environment. It places files inside a folder
+with a name you choose (`.venv` in the project folder is the standard choice)
+that looks like this:
+
+```bash
+.venv
+├── .gitignore      # These make sure tools know not to include/archive
+├── CACHEDIR.TAG    # this folder
+│
+├── bin
+│   ├── activate    # "activation" scripts for different shells (bash default)
+│   ...
+│   ├── python      # Symlinks to your local Python install
+│   ├── python3
+│   └── python3.14
+│
+├── lib
+│   └── python3.14
+│       └── site-packages  # This is where installed libraries go
+│           ...
+│
+└── pyvenv.cfg      # Special file telling Python this is a virtual environment
+```
+
+
+
+> [!NOTE]
+> Conda environments: the `base` environment has many of the same problems. One environment per project is best.
+> Conda lets you make environments by name (stored in a directory) or by path.
