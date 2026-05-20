@@ -11,3 +11,31 @@ backgroundImage: url('https://marp.app/assets/hero-background.svg')
 
 ## Intro to setup
 
+---
+
+## Before you begin
+
+<div class="columns">
+<div>
+
+### Required
+
+- `uv`
+- `pixi`
+- A system compiler
+
+</div>
+<div>
+
+### Recommended
+
+- `prek`
+- `nox`
+
+</div>
+</div>
+
+---
+
+## Basic concepts
+
