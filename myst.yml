@@ -12,11 +12,11 @@ project:
     - file: README.md
     - title: Basic Packaging
       children:
-        - file: basic_packaging/01_setup.md
-        - file: basic_packaging/02_tooling.md
-        - file: basic_packaging/03_package.md
-        - file: basic_packaging/03_publishing_ci.md
-        - file: basic_packaging/04_sp_guide.md
+        - file: basic-packaging/01_setup.md
+        - file: basic-packaging/02_tooling.md
+        - file: basic-packaging/03_package.md
+        - file: basic-packaging/03_publishing_ci.md
+        - file: basic-packaging/04_sp_guide.md
     - title: Compiled
       children:
         - file: compiled/01_package.md
