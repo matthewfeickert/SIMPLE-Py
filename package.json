@@ -3,10 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build-book": "myst build --html",
+    "build-book": "myst build --site",
     "build-slides": "mkdir -p _build/html/slides && marp slides/1_01_setup.md --html -o _build/html/slides/1_01_setup.html",
-    "build": "bun run build-book && bun run build-slides",
-    "serve": "bun run build && bunx serve _build/html -p 3000",
+    "build": "bun run build-slides && bun run build-book",
+    "serve": "bun run build-slides && myst start",
     "clean": "rm -rf _build"
   },
   "dependencies": {
