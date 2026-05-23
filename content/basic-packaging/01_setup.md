@@ -34,7 +34,7 @@ The first thing you should know when packaging is how to install stuff.
 There are three options:
 
 |                          | Location          | Pros                | Cons                    |
-|--------------------------|-------------------|---------------------|-------------------------|
+| ------------------------ | ----------------- | ------------------- | ----------------------- |
 | **System site-packages** | `/...`            | Works from anywhere | Can break your machine  |
 | **User site-packages**   | `~/.local/...`    | User permission     | Can break other Pythons |
 | **Virtual environment**  | `.venv/` (common) | Many!               | More effort             |
@@ -44,7 +44,7 @@ packages, they can break your system, you can't control what each project
 needs, you can end up not knowing what your requirements are, it's hard to
 update, etc.
 
-The standard solution is a virual environment. It places files inside a folder
+The standard solution is a virtual environment. It places files inside a folder
 with a name you choose (`.venv` in the project folder is the standard choice)
 that looks like this:
 
@@ -91,7 +91,7 @@ deactivate
 ::::
 
 > [!WARNING]
-> Some applications might require the enviroment be set to work. It's rare, but keep that in mind if you use the direct syntax. Things that use `sys.executable` work correclty.
+> Some applications might require the environment be set to work. It's rare, but keep that in mind if you use the direct syntax. Things that use `sys.executable` work correctly.
 
 The `.` at the start (most shells support `source` as well) allows the activation script to set environment variables, something a normal application could not do. It sets `PATH` (and `VIRTUALENV`, but that is informational) so things inside the virtual environment's bin are at the beginning of the PATH.
 
@@ -127,7 +127,7 @@ This is faster than `venv`, has better default installs inside, but does require
 uv venv
 ```
 
-This is really fast, though it's completly empty (no pip). And it defaults to `.venv`. Also requires installation (a single Rust binary or pip install).
+This is really fast, though it's completely empty (no pip). And it defaults to `.venv`. Also requires installation (a single Rust binary or pip install).
 
 :::
 ::::
@@ -135,8 +135,7 @@ This is really fast, though it's completly empty (no pip). And it defaults to `.
 
 We will be using `uv`, which can do a lot of this for us.
 
-[^1]: Distibutions may strip it out and make it a seperate intallable package.
-
+[^1]: Distributions may strip it out and make it a separate intallable package.
 
 ### Requirements
 
@@ -149,22 +148,22 @@ But a virtual environment is meant to be expendable. You should be able to delet
 :::{card} Project (app)
 These are for making a virtual env. They don't affect libraries.
 
-* **requirement.txt**: Classic, very old format
-  * Basically a list of args to pass to `pip install`
-* **requirements.in**: Manual locking
-  * You make a locked requirements.txt from this file
-* **Lock file**: Versions are pinned exactly
-* **dependency-groups**: Multiple collections of packages
-:::
-::::
-::::{grid-item}
-:::{card} Package (library)
-These are for libraries.
+- **requirement.txt**: Classic, very old format
+  - Basically a list of args to pass to `pip install`
+- **requirements.in**: Manual locking
+  - You make a locked requirements.txt from this file
+- **Lock file**: Versions are pinned exactly
+- **dependency-groups**: Multiple collections of packages
+  :::
+  ::::
+  ::::{grid-item}
+  :::{card} Package (library)
+  These are for libraries.
 
-* **dependencies**: The minimum requirements to install your package
-* **optional-dependencies**: Sets of extra requirements that can be requested on install
+- **dependencies**: The minimum requirements to install your package
+- **optional-dependencies**: Sets of extra requirements that can be requested on install
 
-Most libraries also have developer environements, which follows the "Project
+Most libraries also have developer environments, which follows the "Project
 (app)" patterns for things like tests and documentation.
 
 > [!WARNING]
@@ -182,7 +181,6 @@ machine. However, dependencies cannot be locked for libraries; it would be a
 problem if your two favorite libraries could not be installed together in one
 environment because they conflicted on pins!
 
-
 ### Summary
 
 So far, we have discussed:
@@ -198,7 +196,7 @@ lock files
 : Fully pinned set of packages
 :::
 
-This might seem simple, but creating, activating, installing, and locking are all seperate steps with different incatations and different tools.
+This might seem simple, but creating, activating, installing, and locking are all separate steps with different incantations and different tools.
 
 :::{exercise} Basic virtual environment
 :label: basic-venv
@@ -228,10 +226,13 @@ rm -r .venv             # venvs can be removed
 
 #### Persistent apps
 
-Let's break up applications and libraries. An application is something you install and run, but
-(assuming you use virtual environments) never needs to be installed with other _unrelated_ things (apps that support plugins are okay). Generally, you won't `import` an app inside Python, you'll run it from the command line (or a graphical interace, etc).
+Let's break up applications and libraries. An application is something you
+install and run, but (assuming you use virtual environments) never needs to be
+installed with other _unrelated_ things (apps that support plugins are okay).
+Generally, you won't `import` an app inside Python, you'll run it from the
+command line (or a graphical interface, etc).
 
-This special propety allows us to do something interesting. Imagine we:
+This special property allows us to do something interesting. Imagine we:
 
 1. Made a venv somewhere
 2. Installed our application in it
@@ -242,7 +243,6 @@ Since we never need to import it, we can get away without activation. This is ex
 Use `uv tool install` to install apps. Use `uv tool list` to see what you've
 installed. `uv tool upgrade` to upgrade, and `uv tool uninstall` to remove
 them. (See `uv tool --help`).
-
 
 :::{exercise} Tool install
 :label: tool-install
@@ -267,21 +267,73 @@ uv tool uninstall cowsay
 
 :::
 
-
 #### Single use apps
 
 We can do one better if we have something we don't want to run all the time.
 The install and run steps can be combined! This is such a common need that
-`uv` comes with a seperate CLI `uvx` that does this. Running this:
+`uv` comes with a separate CLI `uvx` that does this. Running this:
 
 ```bash
 uvx cowsay
 ```
 
 Will make a venv, download the app, then run a command with the same name in
-the venv.  If you run it again, it will recreate the venv if it's over a week
+the venv. If you run it again, it will recreate the venv if it's over a week
 old.
 
 With this, you basically have all of PyPI at your fingertips, and you don't
 have to remember to update things too!
 
+#### Single file scripts
+
+Another thing we can do is single-file scripts. They look like this:
+
+```python
+# /// script
+# dependencies = ["numpy"]
+# ///
+
+import numpy as np
+
+if __name__ == "__main__":
+    print(np.array([1, 2, 3]))
+```
+
+When you run it:
+
+::::{tab-set}
+:::{tab-item} uv
+
+```bash
+uv run single.py
+```
+
+:::
+:::{tab-item} pipx
+
+```bash
+pipx run single.py
+```
+
+:::
+::::
+
+The dependencies will be downloaded into a temporary venv.
+
+#### Projects (websites, etc)
+
+These are very similar to libraries (below); the key difference is you should
+always commit your lockfile (vs. being optional for libraries).
+
+How you specify your dependencies depends a bit on the tool you are using,
+since it is not standardized like libraries are. But you can always use `[project]`
+and make it an unpublishable library by adding this:
+
+```toml
+[project]
+classifiers = [
+  "Private :: Do Not Upload",
+]
+```
+
+### Libraries
