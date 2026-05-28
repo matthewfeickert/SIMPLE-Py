@@ -1,6 +1,6 @@
 ---
 downloads:
-  - url: slides/1_01_setup.html
+  - url: /slides/1_01_setup.html
     static: false
     title: Slides
 ---
