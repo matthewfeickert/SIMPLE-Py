@@ -1,7 +1,5 @@
 ---
 downloads:
-  - file: index.md
-    title: Source File
   - url: slides/1_01_setup.html
     static: false
     title: Slides
@@ -288,7 +286,8 @@ have to remember to update things too!
 
 Another thing we can do is single-file scripts. They look like this:
 
-```python
+```{code} python
+:filename: simple.py
 # /// script
 # dependencies = ["numpy"]
 # ///
@@ -329,7 +328,8 @@ How you specify your dependencies depends a bit on the tool you are using,
 since it is not standardized like libraries are. But you can always use `[project]`
 and make it an unpublishable library by adding this:
 
-```toml
+```{code} toml
+:filename: pyproject.toml
 [project]
 classifiers = [
   "Private :: Do Not Upload",
@@ -337,3 +337,145 @@ classifiers = [
 ```
 
 ### Libraries
+
+A library is something that can be shared with others. The key feature is that
+it must be able to share an environment with whatever else the user of the
+library needs. If a user is expected to `import` your code, it's a library.
+
+Later sections will explain a lot more about packages, so let's just present a basic `pyproject.toml`:
+
+```{code} toml
+:filename: pyproject.toml
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "example"
+version = "0.1.0"
+```
+
+Notice the `[build-system]` section; this tells tools how to build the package
+into something you can distribute and install. There are quite a few build
+backends; the one above uses `hatchling`.
+
+There are a lot of places to put dependencies; here's an expanded version with annotations:
+
+```{code} toml
+:linenos:
+:filename: pyproject.toml
+:emphasize-lines: 2,8,11,14
+[build-system]
+requires = ["hatchling"]  # 1
+build-backend = "hatchling.build"
+
+[project]
+name = "example"
+version = "0.1.0"
+dependencies = [] # 2
+
+[project.optional-dependencies]
+extra = []  # 3
+
+[dependency-groups]
+dev = [] # 4
+```
+
+:::{glossary}
+build-system.requires
+: Requirements that are installed when building distributions. This is your
+build-backend, and anything else require to assemble your package from source.
+These are not available at runtime for users. Noted with `# 1` above.
+
+project.dependencies
+: Libraries that must always be installed to use your package. Any installation
+of your package will also install these. Noted with `# 2` above.
+
+project.optional-dependencies
+: This is a table with arbitrary keys. When a user is installing your package,
+they can add `[extra]` to install the list of dependencies named `extra`.
+These will not neccisarly be present if the user didn't request then. Also
+known as "extras". These are part of the public package metadata. Noted with
+`# 3` above.
+
+dependency-groups
+: This is a table with arbitrary keys. Unlike project.optional-dependencies, these
+do not become part of the package metadata; you must have the `pyproject.toml` file
+to install them. They also do not require you install the package. Commonly
+used for development dependencies, like tests, docs, coverage, and the like.
+Noted with `# 4` above.
+:::
+
+A quick comparison:
+
+|                                | `b-s.r` | `p.d` | `p.o-d` | `d-g` |
+| ------------------------------ | ------- | ----- | ------- | ----- |
+| Public metadata                | ✅      | ✅    | ✅      | ❌    |
+| Always installed               | ❌      | ✅    | ❌      | ❌    |
+| Named groups                   | ❌      | ❌    | ✅      | ✅    |
+| Can be independently installed | ❌      | ❌    | ✅      | ✅    |
+
+#### High level project management with uv
+
+When dependency-groups were introduced, uv made a brilliant decision: if there's
+a group named `dev`, it is installed by default when using `uv run`. This enables
+the following file:
+
+```{code} toml
+:filename: pyproject.toml
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "example"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = ["numpy"]
+
+[dependency-groups]
+dev = ["pytest"]
+```
+
+to be all you need to use `uv run`. For example,
+
+```bash
+uv run pytest
+```
+
+will:
+
+- Download Python if you don't have a valid copy
+- Make a virtual environment at `.venv` if it doesn't exist
+- Install dependencies from a `uv.lock` lockfile if it exists
+- Create a `uv.lock` file from `project.dependencies` and `dependency-groups.dev` if it doesn't exist and install
+- Make an editable install of your project
+- Run whatever command you give it from that virtual environment
+
+If you edit the dependencies, then the lockfile and `.venv` will be updated
+when you `uv run` again.
+
+Any command works, so `uv run python` starts up `python`, if you have command
+line apps you can use `uv run ...`, etc.
+
+:::{exercise} Development environment
+:label: uv-dev-env
+
+The most downloaded Python package in the world is probably `packaging` (not
+counting AWS). Download the `https://github.com/pypa/packaging` repository from
+github, and run the test suite with `pytest` using uv.
+
+:::
+
+:::{solution} uv-dev-env
+:class: dropdown
+
+Assuming a unix-like system and bash:
+
+```bash
+git clone https://github.com/pypa/packaging
+cd packaging
+uv run pytest
+```
+
+:::
