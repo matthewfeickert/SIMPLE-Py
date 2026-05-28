@@ -1,11 +1,6 @@
----
-downloads:
-  - url: /slides/1_01_setup.html
-    static: false
-    title: Slides
----
-
 # Setting up for development
+
+{button}`Slides <https://scikit-build.org/SIMPLE-Py/slides/1_01_setup>`
 
 ## Before you begin
 
