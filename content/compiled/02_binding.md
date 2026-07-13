@@ -267,7 +267,7 @@ The FCN is an abstract base class in C++. To let Python subclass it, we use a
 
 ::::
 
-`PYBIND11_OVERLOAD_PURE_NAME` maps C++'s `operator()` to Python's `__call__`;
+`PYBIND11_OVERRIDE_PURE_NAME` maps C++'s `operator()` to Python's `__call__`;
 nanobind's equivalent is `NB_OVERRIDE_PURE_NAME`, after declaring the trampoline
 with `NB_TRAMPOLINE`. Including `<pybind11/stl.h>` -- or, for nanobind, the
 per-type `<nanobind/stl/vector.h>` -- gives us automatic `std::vector<double>` ↔
