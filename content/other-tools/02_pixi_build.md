@@ -7,6 +7,8 @@ To learn the sections and functionalities by example rather than by inspection o
 
 ## Basic Packaging
 
+### Configuring the Pixi manifest
+
 Take the example Python package directory tree from [Making a basic package](https://scikit-build.org/SIMPLE-Py/package/) as a starting foundation.
 
 ```bash
@@ -223,3 +225,189 @@ pixi publish --clean --target-channel https://prefix.dev/<channel-name>
 :::
 
 ::::
+
+## Compiled Packaging
+
+Take the example Python package directory tree from [A minimal compiled package with scikit-build](https://scikit-build.org/SIMPLE-Py/compiled) as a starting foundation.
+
+```bash
+cp -R ./examples/2_01_package/collatz /tmp/compiled
+cd /tmp/compiled
+```
+
+Next, create a Pixi manifest as a `pyproject.toml` `[tool.pixi]` table.
+
+```bash
+pixi init --format pyproject
+```
+
+```{code} toml
+:filename: pyproject.toml
+:linenos:
+:emphasize-lines: 13-16
+[build-system]
+requires = ["scikit-build-core", "pybind11"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "collatz"
+version = "0.1.0"
+
+[tool.pixi.workspace]
+channels = ["conda-forge"]
+platforms = ["linux-64"]
+
+[tool.pixi.pypi-dependencies]
+collatz = { path = ".", editable = true }
+
+[tool.pixi.tasks]
+```
+
+Now, enable the Pixi Build preview feature
+
+```toml
+preview = ["pixi-build"]
+```
+
+and add the platforms you might want to support (like normal)
+
+```bash
+pixi workspace platform add linux-64 osx-64 win-64 osx-arm64 linux-aarch64
+```
+
+change `collatz` from a Python package dependency to a conda package dependency
+
+```diff
+-[tool.pixi.pypi-dependencies]
+-collatz = { path = ".", editable = true }
++[tool.pixi.dependencies]
++collatz = { path = "." }
+```
+
+add a `[package]` TOML table
+
+```toml
+[tool.pixi.package]
+name = "collatz"
+version = "0.1.0"
+```
+
+add the Python build backend to the `[package.build.backend]` table.
+
+```toml
+[tool.pixi.package.build.backend]
+name = "pixi-build-python"
+version = "0.*"
+```
+
+As we are using compilers we need to tell Pixi Build the compiler types that we require, and it can figure out the rest.
+We can also set `ignore-pypi-mapping` to automatically enable PyPI-to-conda name mapping (which somewhat confusingly happens under `false`) to not have to redefine the `host` dependencies.
+
+```toml
+[tool.pixi.package.build.config]
+# c.f. https://pixi.prefix.dev/latest/build/backends/pixi-build-python/#compilers
+# c.f. https://pixi.prefix.dev/latest/build/backends/pixi-build-python/#ignore-pypi-mapping
+compilers = ["cxx"]
+ignore-pypi-mapping = false  # Enable automatic PyPI-to-conda mapping
+
+...
+
+# Unneeded given package.build.config.ignore-pypi-mapping = false
+# [tool.pixi.package.host-dependencies]
+# scikit-build-core = "*"
+# pybind11 = "*"
+```
+
+Then add the the necessary `build` requirements.
+
+```toml
+[tool.pixi.package.build-dependencies]
+cmake = "*"
+ninja = "*"
+```
+
+Finally, we want to take advantage of `scikit-build-core`'s defaults of using Ninja.
+`rattler-build` (through `pixi-build-python`) exports `CMAKE_GENERATOR='Unix Makefiles'` as a default behavior, which overrides `scikit-build-core`'s default of Ninja.[^1]
+To restore the default behavior provide `scikit-build-core` explicit arguments.
+
+```toml
+[tool.scikit-build]
+# c.f. https://github.com/prefix-dev/rattler-build/issues/2487
+cmake.args = ["-GNinja"]
+```
+
+```{literalinclude} ../../examples/5_02_pixi_build/compiled/pyproject.toml
+:filename: pyproject.toml
+:linenos:
+:emphasize-lines: 15-17, 19-38
+```
+
+So in just over 20 lines of TOML, we can build a conda package for a Python package with compiled extensions!
+
+::::{exercise} Build and install the conda package
+:label: build-and-install-collatz
+
+Build `collatz` as a conda package and install it into your Pixi workspace environment.
+
+:::{solution} build-and-install-collatz
+:class: dropdown
+
+```bash
+pixi install
+pixi run python -c 'from collatz import collatz_steps; print(collatz_steps(27))'
+```
+
+You can verify with
+
+```bash
+pixi list -x
+```
+
+:::
+
+::::
+
+::::{exercise} Build a conda package archive
+:label: publish-collatz
+
+Build `collatz` as a local conda package archive and publish it to a local channel and inspect it.
+
+:::{solution} publish-collatz
+:class: dropdown
+
+```bash
+pixi publish --clean --target-channel /tmp/local-channel
+rattler-build package inspect /tmp/local-channel/linux-64/collatz*.conda
+```
+
+:::
+
+::::
+
+::::{exercise} Install a conda package from a new channel
+:label: prefix-channel-collatz
+
+`collatz` was published on the conda channel <https://prefix.dev/matthewfeickert>.
+
+```bash
+pixi auth login --token <token> prefix.dev
+pixi publish --clean --target-channel https://prefix.dev/matthewfeickert
+```
+
+Create a new workspace and install from that channel.
+
+:::{solution} prefix-channel-collatz
+:class: dropdown
+
+```bash
+pixi init prefix-channel-example && cd prefix-channel-example
+pixi workspace channel add https://prefix.dev/matthewfeickert
+pixi add collatz
+pixi list -x
+```
+
+:::
+
+::::
+
+[^1]: c.f. <https://github.com/prefix-dev/rattler-build/issues/2487>
