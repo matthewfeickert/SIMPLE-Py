@@ -23,3 +23,6 @@ __pycache__/
 
 # Build artifacts from `uv build`
 dist/
+
+# Place to work
+workspace/
