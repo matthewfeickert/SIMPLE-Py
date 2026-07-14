@@ -21,6 +21,7 @@ Some logistics:
 - Everyone should have gotten a badge
 - Everyone should be in Slack
 - Reminder to fill out reimbersment as soon as possible (after hotel stays are over, ideally - before end of month!)
+- Group photo: 1:15?
 
 ---
 
